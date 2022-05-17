@@ -8,13 +8,9 @@ Created on Tue May 17 11:49:18 2022
 import pandas as pd
 import os
 import pickle
-import numpy as np
 from sklearn.preprocessing import RobustScaler
-from sklearn.model_selection import train_test_split, RandomizedSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report,confusion_matrix,accuracy_score
 
 

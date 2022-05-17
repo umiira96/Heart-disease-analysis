@@ -23,15 +23,22 @@ with open(SCALER_SAVE_PATH, 'rb') as f:
 with open(MODEL_PATH, 'rb') as g:
     random_forest = pickle.load(g)
     
+chances = {0:"low", 1:"high"}
 
 #%% deployment
 
 # Insert data and scale it
-patience_info = np.array([63,1,3,145,233,1,0,150,0,2.3,0,0,1])
-patience_info = r_scaler.transform(np.expand_dims(patience_info, axis=-1))
+#patience_info = np.array([63,1,3,145,233,1,0,150,0,2.3,0,0,1])
+#patience_info = r_scaler.transform(patience_info)
 
 # predict using model
-
+#new_pred = random_forest.predict(patience_info)
+#if np.argmax(new_pred) == 1:
+#    new_pred = [0,1]
+#    print(chances[np.argmax(new_pred)])
+#else:
+##    new_pred = [1,0]
+#    print(chances[np.argmax(new_pred)])
     
 #%% Build app using streamlit 
 with st.form('Heart Attack Prediction Form'):
@@ -58,7 +65,7 @@ with st.form('Heart Attack Prediction Form'):
         patience_info = r_scaler.transform(np.expand_dims(patience_info, axis=0))
         new_pred = random_forest.predict(patience_info)
         if np.argmax(new_pred) == 1:
-            st.warning()
+            st.warning("Possibility to get heart attack is low")
         else:
             st.snow()
-            st.success()
+            st.success("Possibility to get heart attack is high")
