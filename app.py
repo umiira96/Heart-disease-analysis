@@ -12,34 +12,20 @@ import streamlit as st
 
 
 #%% PATH
-SCALER_SAVE_PATH = os.path.join(os.getcwd(), 'saved_model', 'r.scaler.pkl')
-MODEL_PATH = os.path.join(os.getcwd(), 'saved_model', 'model.pkl')
+MMS_SAVE_PATH = os.path.join(os.getcwd(), 'saved_model', 'mms.pickle')
+MODEL_SAVE_PATH = os.path.join(os.getcwd(),'saved_model', 'rf.pkl')
 
 #%% Loading
-# Scaler
-with open(SCALER_SAVE_PATH, 'rb') as f:
-    r_scaler = pickle.load(f)
-# Model
-with open(MODEL_PATH, 'rb') as g:
-    random_forest = pickle.load(g)
+# mms scaler
+with open(MMS_SAVE_PATH, 'rb') as file:
+    mms = pickle.load(file)
+    
+# random forest model
+with open(MODEL_SAVE_PATH, 'rb') as file:
+    random_forest = pickle.load(file)
     
 chances = {0:"low", 1:"high"}
 
-#%% deployment
-
-# Insert data and scale it
-#patience_info = np.array([63,1,3,145,233,1,0,150,0,2.3,0,0,1])
-#patience_info = r_scaler.transform(patience_info)
-
-# predict using model
-#new_pred = random_forest.predict(patience_info)
-#if np.argmax(new_pred) == 1:
-#    new_pred = [0,1]
-#    print(chances[np.argmax(new_pred)])
-#else:
-##    new_pred = [1,0]
-#    print(chances[np.argmax(new_pred)])
-    
 #%% Build app using streamlit 
 with st.form('Heart Attack Prediction Form'):
     st.write("Patient's Info")
@@ -62,10 +48,9 @@ with st.form('Heart Attack Prediction Form'):
     
     if submitted == True:
         patience_info = np.array([age,sex,cp,trtbps,chol,fbs,restecg,thalachh,exng,oldpeak,slp,caa,thall])
-        patience_info = r_scaler.transform(np.expand_dims(patience_info, axis=0))
-        new_pred = random_forest.predict(patience_info)
-        if np.argmax(new_pred) == 1:
-            st.warning("Possibility to get heart attack is low")
+        patience_info = mms.transform(np.expand_dims(patience_info, axis=0))
+        predict = random_forest.predict(patience_info)
+        if np.argmax(predict) == 1:
+            st.success(f"Chances to get heart attack is {chances[np.argmax(predict)]}")
         else:
-            st.snow()
-            st.success("Possibility to get heart attack is high")
+            st.warning(f"Chances to get heart attack is {chances[np.argmax(predict)]}")
